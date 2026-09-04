@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maigzip</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:sans-serif; background:#0f1220; color:#fff; min-height:100vh; }
+header { text-align:center; padding:2rem 1rem; }
+h1 { color:#00e5a0; font-size:2rem; }
+main { padding:1rem; }
+#dropzone { border:2px dashed #00e5a0; border-radius:16px; padding:3rem 1rem; text-align:center; background:#161a2e; }
+.item { background:#161a2e; border-radius:12px; padding:1rem; margin-top:0.75rem; }
+.gain { color:#00e5a0; font-weight:bold; }
+.dl { color:#00e5a0; display:inline-block; margin-top:0.5rem; }
+#log { background:#000; color:#0f0; font-size:11px; padding:6px; margin-top:1rem; min-height:60px; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+<header>
+<h1>Maigzip</h1>
+<p>Compression intelligente propulsee par Nexa</p>
+</header>
+<main>
+<div id="dropzone">
+<p>Touchez ici pour choisir une photo</p>
+</div>
+<input type="file" id="fileInput" accept="image/*" multiple hidden>
+<div id="results"></div>
+<pre id="log">Console :</pre>
+</main>
+<script>
+var log = document.getElementById('log');
+function L(msg) { log.textContent += '\n> ' + msg; }
+var dz = document.getElementById('dropzone');
+var fi = document.getElementById('fileInput');
+var res = document.getElementById('results');
+L('Script demarre');
+dz.addEventListener('click', function() { L('Clic detecte'); fi.click(); });
+fi.addEventListener('change', function(e) {
+L('Fichiers : ' + e.target.files.length);
+for (var i = 0; i < e.target.files.length; i++) { compress(e.target.files[i]); }
+});
+function taille(o) {
+if (o < 1048576) return (o/1024).toFixed(1) + ' Ko';
+return (o/1048576).toFixed(2) + ' Mo';
+}
+function compress(file) {
+L('Compression de ' + file.name);
+var img = new Image();
+img.onload = function() {
+L('Image chargee ' + img.width + 'x' + img.height);
+var c = document.createElement('canvas');
+var s = Math.min(1, 1920 / img.width);
+c.width = Math.round(img.width * s);
+c.height = Math.round(img.height * s);
+c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+c.toBlob(function(blob) {
+if (!blob) { L('ERREUR blob'); return; }
+var gain = Math.round((1 - blob.size / file.size) * 100);
+var d = document.createElement('div');
+d.className = 'item';
+d.innerHTML = '<strong>' + file.name + '</strong><br>' + taille(file.size) + ' <span class="gain">' + taille(blob.size) + '</span> (-' + gain + '%)';
+var a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = file.name.replace(/\.\w+$/, '') + '.webp';
+a.className = 'dl';
+a.textContent = 'Telecharger';
+d.appendChild(a);
+res.appendChild(d);
+L('OK ! -' + gain + '%');
+}, 'image/webp', 0.8);
+};
+img.onerror = function() { L('ERREUR chargement image'); };
+img.src = URL.createObjectURL(file);
+}
+</script>
+</body>
+</html>

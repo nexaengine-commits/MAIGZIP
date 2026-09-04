@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maigzip — Compresseur Intelligent</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+</head>
+<body>
+  <header>
+    <h1>📦 Maigzip</h1>
+    <p>Compression intelligente — propulsé par Nexa</p>
+  </header>
+
+  <!-- Zone de dépôt des fichiers -->
+  <main>
+    <div id="dropzone">
+      <p>👆 Touchez ici ou déposez vos fichiers</p>
+      <p class="sub">Images • Vidéos • Documents</p>
+    </div>
+    <input type="file" id="fileInput" multiple hidden>
+
+    <!-- Résultats -->
+    <div id="results"></div>
+  </main>
+
+  <footer>
+    <p>Prototype v0.1 — Défi 18 jours</p>
+  </footer>
+
+  <script src="js/debug.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
